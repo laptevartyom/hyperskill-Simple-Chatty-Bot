@@ -1,0 +1,135 @@
+package tictactoe;
+
+import java.util.Arrays;
+import java.util.Scanner;
+
+public class Main {
+
+    private static final char[][] board = new char[3][3];
+    private static final Scanner in = new Scanner(System.in);
+    static int y , x;
+    private static char previous = ' ';
+    private static boolean winX = false;
+    private static boolean winO = false;
+
+    public static void main(String[] args) {
+        fillArray();
+        for (int i = 0; i < 10; i++) {
+            winCheck();
+            if (winX) {
+                printBoard();
+                System.out.println("X wins");
+                break;
+            }
+            if (winO) {
+                printBoard();
+                System.out.println("O wins");
+                break;
+            }
+            printBoard();
+            step();
+            if (i == 8 && !winX && !winO) {
+                printBoard();
+                System.out.println("Draw");
+                break;
+            }
+        }
+
+    }
+
+    private static void checkInput(int y, int x) {
+
+        if ((x < 1 || x > 3) || (y < 1 || y > 3)) {
+            System.out.println("Coordinates should be from 1 to 3!");
+            in.nextLine();
+            step();
+        } else {
+
+            if (board[y - 1][x - 1] != ' ') {
+                System.out.println("This cell is occupied! Choose another one!");
+                in.nextLine();
+                step();
+            } else if (previous != 'X') {
+                board[y - 1][x - 1] = 'X';
+                previous = 'X';
+            } else if (previous != 'O') {
+                board[y - 1][x - 1] = 'O';
+                previous = 'O';
+            }
+        }
+    }
+
+    private static void fillArray() {
+        for (char[] row : board)
+            Arrays.fill(row, ' ');
+    }
+
+    static void step() {
+        System.out.print("Enter the coordinates: ");
+        if (in.hasNextInt()) {
+            y = in.nextInt();
+            x = in.nextInt();
+            checkInput(y, x);
+            return;
+        }
+        if (!in.hasNextInt()) {
+            System.out.println("You should enter numbers!");
+            in.nextLine();
+            step();
+        }
+    }
+
+    static void winCheck(){
+        for (int i = 0; i < 3; i++) {
+            int countX = 0;
+            int countO = 0;
+            for (int j = 0; j < 3; j++) {
+                if (board[i][j] == 'X') {
+                    countX++;
+                } else if (board[i][j] == 'O') {
+                    countO++;
+                }
+            }
+            if (countO == 3) {
+                winO = true;
+            }
+            if (countX == 3) {
+                winX = true;
+            }
+        }
+        for (int i = 0; i < 3; i++) {
+            int countX = 0;
+            int countO = 0;
+            for (int j = 0; j < 3; j++) {
+                if (board[j][i] == 'X') {
+                    countX++;
+                } else if (board[j][i] == 'O') {
+                    countO++;
+                }
+            }
+            if (countO == 3) {
+                winO = true;
+            }
+            if (countX == 3) {
+                winX = true;
+            }
+        }
+        if (board[0][0] == board[1][1] && board[1][1] == board[2][2] && board[1][1] == 'X') { winX = true; }
+        if (board[0][0] == board[1][1] && board[1][1] == board[2][2] && board[1][1] == 'O') { winO = true; }
+        if (board[0][2] == board[1][1] && board[1][1] == board[2][0] && board[1][1] == 'X') { winX = true; }
+        if (board[0][2] == board[1][1] && board[1][1] == board[2][0] && board[1][1] == 'O') { winO = true; }
+
+    }
+
+    static void printBoard() {
+        System.out.println("-".repeat(9));
+        for (int k = 0; k < 3; k++) {
+            System.out.print("| ");
+            for (int j = 0; j < 3; j++) {
+                System.out.print(board[k][j] + " ");
+            }
+            System.out.println("|");
+        }
+        System.out.println("-".repeat(9));
+    }
+}
